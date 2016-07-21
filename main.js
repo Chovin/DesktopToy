@@ -1,8 +1,11 @@
 'use strict';
 
+var electron = require('electron');
 var app = require('electron').app;
 var BrowserWindow = require('electron').BrowserWindow;
 var ipc = require('electron').ipcMain
+var screen = electron.screen
+var bounds = screen.getPrimaryDisplay().bounds
 var width = 300
 var height = 300
 var mainWindow = null;
