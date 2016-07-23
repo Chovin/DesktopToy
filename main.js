@@ -4,18 +4,20 @@ var electron = require('electron');
 var app = require('electron').app;
 var BrowserWindow = require('electron').BrowserWindow;
 var ipc = require('electron').ipcMain
-var screen = electron.screen
-var bounds = screen.getPrimaryDisplay().bounds
 var width = 300
 var height = 300
 var mainWindow = null;
+var screen;
+var bounds
 
 app.on('ready', function() {
+	screen = electron.screen
+	bounds = screen.getPrimaryDisplay().bounds
     mainWindow = new BrowserWindow({
         frame: false,
-        height: height,
+        height: bounds.height,
         resizable: false,
-        width: width,
+        width: bounds.width,
         transparent: true,
         fullscreen: false,
         fullscreenable: false
@@ -23,6 +25,7 @@ app.on('ready', function() {
 
     mainWindow.loadURL('file://' + __dirname + '/app/index.html');
 });
+
 
 ipc.on('clicked-pos', function(evt,x,y) {
 	mainWindow.setBounds({x:x-(width/2),y:y-(height/2),width:width, height:height},true)
