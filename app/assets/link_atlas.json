@@ -1,0 +1,28 @@
+{
+	"frames": [
+		{
+			"filename": "walking1",
+			"frame": {"x":9,"y":184,"w":18,"h":27},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {"x":0,"y":0,"w":18,"h":27},
+			"sourceSize": {"w":18,"h":27}
+		},
+		{
+			"filename": "walking2",
+			"frame": {"x":40,"y":184,"w":18,"h":27},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {"x":0,"y":0,"w":18,"h":27},
+			"sourceSize": {"w":18,"h":27}
+		}
+	],
+	"meta": {
+		"app": "me",
+		"version": "1.0",
+		"image": "link_atlas.png",
+		"format": "RGBA8888",
+		"size": {"w":2580,"h":616},
+		"scale": "1"
+	}
+}
