@@ -73,11 +73,11 @@ function create() {
 
 	//game.camera.follow(link);
     //cursors = game.input.keyboard.createCursorKeys();
-    /*blink =  game.add.sprite(100+width*scale, 100, 'link', 'walking_left1');
+/*    blink =  game.add.sprite(100+width*scale, 100, 'link', 'walking_left1');
     blink.animations.add('walk_left', Phaser.Animation.generateFrameNames('walking_left', 1, 6, '', 1), fps, true);
     blink.smoothed = false;
     blink.scale.setTo(scale, scale);
-    blink.animations.play('walk_left');
+    blink.animations.play('walk_left');*/
 
     clink =  game.add.sprite(100+width*scale*2, 100, 'link', 'walking_down1');
     clink.animations.add('walk_down', Phaser.Animation.generateFrameNames('walking_down', 1, 6, '', 1), fps, true);
@@ -85,7 +85,7 @@ function create() {
     clink.scale.setTo(scale, scale);
     clink.animations.play('walk_down');
 
-    dlink =  game.add.sprite(100+width*scale*3, 100, 'link', 'walking_left1');
+    /*dlink =  game.add.sprite(100+width*scale*3, 100, 'link', 'walking_left1');
     dlink.animations.add('walk_left', Phaser.Animation.generateFrameNames('walking_left', 1, 6, '', 1), fps, true);
     dlink.smoothed = false;
     dlink.scale.setTo(scale, scale);
