@@ -8,11 +8,11 @@ var width = 300
 var height = 300
 var mainWindow = null;
 var screen;
-var bounds
+var bounds;
 
 app.on('ready', function() {
 	screen = electron.screen
-	bounds = screen.getPrimaryDisplay().bounds
+	bounds = screen.getPrimaryDisplay().workAreaSize
     mainWindow = new BrowserWindow({
         frame: false,
         height: bounds.height,

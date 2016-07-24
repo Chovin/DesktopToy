@@ -13,27 +13,37 @@
 <body class="circle">
 
 <script type="text/javascript">
+var electron = require('electron');
+var screen = electron.screen;
+var bounds = screen.getPrimaryDisplay().bounds;
+var cursor;
 
-var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update }, true);
+var game = new Phaser.Game(bounds.width, bounds.height, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render }, true);
 
 function preload() {
 
-    game.load.image('sky', './assets/sky.png');
+/*    game.load.image('sky', './assets/sky.png');
     game.load.image('ground', './assets/platform.png');
     game.load.image('star', './assets/star.png');
-    game.load.spritesheet('dude', './assets/dude.png', 32, 48);
+    game.load.spritesheet('dude', './assets/dude.png', 32, 48);*/
+    game.load.atlas('link', 'assets/link_atlas.png', 'assets/link_atlas.json');
 
 }
 
 var platforms;
 var score = 0;
 var scoreText;
+var link;
+var fps = 10
+var scale = 5;
+var width = 10*scale;
+var cursors
 
 function create() {
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
     //game.add.sprite(0, 0, 'sky');
-    scoreText = game.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+    /*scoreText = game.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
     platforms = game.add.group();
     platforms.enableBody = true;
     var ground = platforms.create(0, game.world.height - 64, 'ground');
@@ -45,10 +55,46 @@ function create() {
 
     ledge = platforms.create(-150, 250, 'ground');
 
-    ledge.body.immovable = true;
+    ledge.body.immovable = true;*/
+
+    //link test
+    //Phaser.Animation.generateFrameNames('walking', 1, 6, '', 1);
+	//alert('hi')
+    link = game.add.sprite(100, 100, 'link', 'walking_up1');
+    game.physics.arcade.enable(link);
+    link.animations.add('walk_up', Phaser.Animation.generateFrameNames('walking_up', 1, 6, '', 1), fps, true);
+    link.animations.add('walk_left', Phaser.Animation.generateFrameNames('walking_left', 1, 6, '', 1), fps, true);
+    link.animations.add('walk_down', Phaser.Animation.generateFrameNames('walking_down', 1, 6, '', 1), fps, true);
+    link.smoothed = false;
+    link.anchor.setTo(.5,.5);
+    link.scale.setTo(scale, scale);
+    /*link.animations.play('walk_up');*/
+    link.body.collideWorldBounds = true;
+
+	//game.camera.follow(link);
+    //cursors = game.input.keyboard.createCursorKeys();
+    /*blink =  game.add.sprite(100+width*scale, 100, 'link', 'walking_left1');
+    blink.animations.add('walk_left', Phaser.Animation.generateFrameNames('walking_left', 1, 6, '', 1), fps, true);
+    blink.smoothed = false;
+    blink.scale.setTo(scale, scale);
+    blink.animations.play('walk_left');
+
+    clink =  game.add.sprite(100+width*scale*2, 100, 'link', 'walking_down1');
+    clink.animations.add('walk_down', Phaser.Animation.generateFrameNames('walking_down', 1, 6, '', 1), fps, true);
+    clink.smoothed = false;
+    clink.scale.setTo(scale, scale);
+    clink.animations.play('walk_down');
+
+    dlink =  game.add.sprite(100+width*scale*3, 100, 'link', 'walking_left1');
+    dlink.animations.add('walk_left', Phaser.Animation.generateFrameNames('walking_left', 1, 6, '', 1), fps, true);
+    dlink.smoothed = false;
+    dlink.scale.setTo(scale, scale);
+    dlink.animations.play('walk_left');
+    dlink.anchor.setTo(.5,.5);
+	dlink.scale.x *= -1;*/
 
      // The player and its settings
-    player = game.add.sprite(32, game.world.height - 150, 'dude');
+/*    player = game.add.sprite(32, game.world.height - 150, 'dude');
 
     //  We need to enable physics on the player
     game.physics.arcade.enable(player);
@@ -77,18 +123,66 @@ function create() {
 
         //  This just gives each star a slightly random bounce value
         star.body.bounce.y = 0.7 + Math.random() * 0.2;
-    }
+    }*/
+
 
 }
 
+var walk_speed = 170;
+var stopped = true;
+var vector = [0,0]
+
 function update() {
+	cursor = screen.getCursorScreenPoint();
 /*    game.physics.arcade.collide(player, platforms);
     game.physics.arcade.collide(stars, platforms);
     game.physics.arcade.overlap(player, stars, collectStar, null, this);
     cursors = game.input.keyboard.createCursorKeys();
+*/
 
-    player.body.velocity.x = 0;
+	/*link.animations.play('walk_up')
+    link.body.velocity.x = 0;*/
 
+    link.body.velocity.set(0);
+    var xdiff = cursor.x - link.x
+    var ydiff = cursor.y - link.y
+    var horz = Math.abs(xdiff)>Math.abs(ydiff)
+
+    if (horz && xdiff < -width)
+    {
+    	link.scale.x = scale;
+        link.animations.play('walk_left');
+        stopped = false
+    }
+    else if (horz && xdiff > width)
+    {
+    	link.scale.x = -scale;
+        link.animations.play('walk_left');
+        stopped = false
+    }
+    else if (ydiff < -width)
+    {
+    	link.scale.x = scale;
+        link.animations.play('walk_up');
+        stopped = false
+    }
+    else if (ydiff > width)
+    {
+    	link.scale.x = scale;
+        link.animations.play('walk_down');
+        stopped = false
+    }
+    else
+    {
+        link.animations.stop();
+        stopped = true
+        return
+    }
+    vector = [xdiff/(Math.abs(xdiff)+Math.abs(ydiff)), ydiff/(Math.abs(xdiff)+Math.abs(ydiff))]
+    link.body.velocity.x = vector[0]*walk_speed;
+    link.body.velocity.y = vector[1]*walk_speed;
+
+/*
     if (cursors.left.isDown)
     {
         //  Move to the left
@@ -118,7 +212,13 @@ function update() {
     }*/
 }
 
-function collectStar (player, star) {
+function render() {
+	cursor = screen.getCursorScreenPoint();
+	game.debug.text(vector[0], 32, 32);
+	game.debug.text(vector[1], 32, 48);
+}
+
+/*function collectStar (player, star) {
 
     // Removes the star from the screen
     star.kill();
@@ -127,7 +227,7 @@ function collectStar (player, star) {
     score += 10;
     scoreText.text = 'Score: ' + score;
 
-}
+}*/
 
 </script>
 
