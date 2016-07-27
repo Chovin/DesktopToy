@@ -20,8 +20,10 @@ app.on('ready', function() {
         width: bounds.width,
         transparent: true,
         fullscreen: false,
-        fullscreenable: false
+        fullscreenable: false,
+        alwaysOnTop: true
     });
+    mainWindow.setIgnoreMouseEvents(true)
 
     mainWindow.loadURL('file://' + __dirname + '/app/index.html');
 });
