@@ -39,9 +39,11 @@ var fps = 10
 var scale = 5;
 var width = 10*scale;
 var cursors
+var graphics
 
 function create() {
     game.physics.startSystem(Phaser.Physics.ARCADE);
+    graphics = game.add.graphics(0, 0);
 
     link = game.add.sprite(100, 100, 'link', 'walking_up1');
     game.physics.arcade.enable(link);
@@ -62,11 +64,27 @@ function create() {
     blink.scale.setTo(scale, scale);
     blink.animations.play('walk_left');*/
 
-    clink =  game.add.sprite(100+width*scale*2, 100, 'link', 'walking_down1');
+/*    clink =  game.add.sprite(100+width*scale*2, 100, 'link', 'walking_down1');
     clink.animations.add('walk_down', Phaser.Animation.generateFrameNames('walking_down', 1, 6, '', 1), fps, true);
     clink.smoothed = false;
     clink.scale.setTo(scale, scale);
-    clink.animations.play('walk_down');
+    clink.animations.play('walk_down');*/
+    // for debugging when testing new frame group
+    // format: name : number of frames
+    frameGroups = {
+        "walking_up" : 6,
+        "walking_left" : 6,
+        "walking_down" : 6
+    }
+    var debugAnims = {}
+    var debugIter = 0;
+    for (let frame in frameGroups) {
+        debugAnims[frame] = game.add.sprite(width*3*++debugIter, 100, 'link', frame+1);
+        debugAnims[frame].animations.add(frame,Phaser.Animation.generateFrameNames(frame, 1, frameGroups[frame], '', 1), fps, true);
+        debugAnims[frame].smoothed = false;
+        debugAnims[frame].scale.setTo(scale, scale);
+        debugAnims[frame].animations.play(frame);
+    }
 
     /*dlink =  game.add.sprite(100+width*scale*3, 100, 'link', 'walking_left1');
     dlink.animations.add('walk_left', Phaser.Animation.generateFrameNames('walking_left', 1, 6, '', 1), fps, true);
@@ -90,6 +108,8 @@ function update() {
     var xdiff = cursor.x - link.x
     var ydiff = cursor.y - link.y
     var horz = Math.abs(xdiff)>Math.abs(ydiff)
+    /*graphics.beginFill(0xff0000, .5)
+    graphics.drawCircle(link.x, link.y, width*2)*/
 
     if (horz && xdiff < -width)
     {
